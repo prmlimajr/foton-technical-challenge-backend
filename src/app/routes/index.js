@@ -9,9 +9,6 @@ const upload = multer(multerConfig);
 
 routes.get('/', BookController.index);
 routes.get('/:id', BookController.show);
-routes.post('/', BookController.store);
-routes.post('/cover', upload.single('file'), (req, res) => {
-  return res.json(req.file);
-});
+routes.post('/', upload.single('file'), BookController.store);
 
 module.exports = routes;

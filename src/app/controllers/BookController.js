@@ -45,7 +45,59 @@ class BookController {
     return res.json(query);
   }
 
-  async store(req, res) {}
+  async store(req, res) {
+    const { name, author, description } = req.body;
+    const { filename: cover } = req.file;
+
+    const schema = Yup.object().shape({
+      name: Yup.string().required(),
+      author: Yup.string().required(),
+      description: Yup.string(),
+      cover: Yup.string(),
+    });
+
+    if (!(await schema.isValid(req.body))) {
+      return res.status(403).json({ error: 'Validation failed' });
+    }
+
+    const [bookAlreadyExists] = await connection('books')
+      .select('books.*')
+      .where({ 'books.name': name, 'books.author': author });
+
+    if (bookAlreadyExists) {
+      return res
+        .status(403)
+        .json({ error: 'Book already exists in the database' });
+    }
+
+    const created = new Date();
+    const updated = new Date();
+
+    const book = {
+      name,
+      author,
+      description,
+      cover,
+      created,
+      updated,
+    };
+
+    const [id] = await connection('books').insert(book, 'id');
+
+    if (!id) {
+      return res.status(500).json({ error: 'Connection failed' });
+    }
+
+    return {
+      id,
+      name,
+      author,
+      description,
+      cover,
+      created,
+      updated,
+    };
+  }
 
   async updated(req, res) {}
 
