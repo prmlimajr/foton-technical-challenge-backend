@@ -38,6 +38,10 @@ class BookController {
 
     const [query] = await connection('books').select('books.*').where({ id });
 
+    if (!query) {
+      return res.status(404).json({ error: 'Book not found' });
+    }
+
     return res.json(query);
   }
 
