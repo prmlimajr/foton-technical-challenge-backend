@@ -26,7 +26,7 @@ class BookController {
         name: book.name,
         author: book.author,
         description: book.description,
-        cover: book.cover,
+        cover: `http://${process.env.BACKEND_SERVER_HOST}:${process.env.PORT}/files/${book.cover}`,
       };
     });
 
@@ -42,6 +42,8 @@ class BookController {
       return res.status(404).json({ error: 'Book not found' });
     }
 
+    query.cover = `http://${process.env.BACKEND_SERVER_HOST}:${process.env.PORT}/files/${query.cover}`;
+
     return res.json(query);
   }
 
@@ -53,7 +55,6 @@ class BookController {
       name: Yup.string().required(),
       author: Yup.string().required(),
       description: Yup.string(),
-      cover: Yup.string(),
     });
 
     if (!(await schema.isValid(req.body))) {
@@ -88,15 +89,10 @@ class BookController {
       return res.status(500).json({ error: 'Connection failed' });
     }
 
-    return {
+    return res.json({
       id,
-      name,
-      author,
-      description,
-      cover,
-      created,
-      updated,
-    };
+      ...book,
+    });
   }
 
   async updated(req, res) {}
