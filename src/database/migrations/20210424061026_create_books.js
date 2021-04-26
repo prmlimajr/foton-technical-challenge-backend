@@ -3,7 +3,7 @@ exports.up = function (knex) {
     table.increments('id').primary();
     table.string('name').notNullable();
     table.string('author').notNullable();
-    table.string('description');
+    table.text('description');
     table.string('cover');
     table.dateTime('created').notNullable().defaultTo(knex.fn.now());
     table.dateTime('updated').notNullable().defaultTo(knex.fn.now());
