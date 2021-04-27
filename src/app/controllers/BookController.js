@@ -49,7 +49,7 @@ class BookController {
 
   async store(req, res) {
     const { name, author, description } = req.body;
-    const { filename: cover } = req.file;
+    // const { filename: cover } = req.file;
 
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -78,7 +78,7 @@ class BookController {
       name,
       author,
       description,
-      cover,
+      cover: 'cover.jpg',
       created,
       updated,
     };
